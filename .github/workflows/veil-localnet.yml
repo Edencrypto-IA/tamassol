@@ -1,0 +1,97 @@
+name: Veil Localnet Validation
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - veil-localnet-validation
+    paths:
+      - "work/veil-localnet/**"
+      - "work/veil-core-review/tamassol_veil_router_v3/**"
+      - ".github/workflows/veil-localnet.yml"
+
+jobs:
+  localnet-e2e:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install native build prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential ca-certificates git curl python3 \
+            clang libclang-dev cmake pkg-config libssl-dev protobuf-compiler
+
+      - name: Install Rust toolchain
+        run: |
+          rustup toolchain install 1.98.1
+          rustup default 1.98.1
+          rustc --version
+          cargo --version
+
+      - name: Install matching Zolana CLI
+        run: |
+          cargo install --git https://github.com/helius-labs/zolana \
+            --tag v0.4.0-alpha zolana-cli
+          zolana --help >/dev/null
+
+      - name: Install Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Install Veil core dependencies
+        working-directory: work/veil-core-review/tamassol_veil_router_v3
+        run: npm ci
+
+      - name: Install localnet validation dependencies
+        working-directory: work/veil-localnet
+        run: npm install --no-audit --no-fund
+
+      - name: Build and unit-test Veil localnet layer
+        working-directory: work/veil-localnet
+        run: npm test
+
+      - name: Start official Zolana localnet
+        run: |
+          nohup zolana dev start > /tmp/zolana-localnet.log 2>&1 &
+          echo $! > /tmp/zolana-localnet.pid
+
+      - name: Wait for validator, Photon and prover
+        working-directory: work/veil-localnet
+        run: |
+          for i in $(seq 1 90); do
+            if npm run preflight; then
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Localnet did not become ready"
+          cat /tmp/zolana-localnet.log || true
+          exit 1
+
+      - name: Run one-shot confidential Veil localnet E2E
+        working-directory: work/veil-localnet
+        run: npm run e2e
+
+      - name: Show non-secret result
+        if: always()
+        working-directory: work/veil-localnet
+        run: |
+          if [ -f localnet-evidence/result.json ]; then
+            cat localnet-evidence/result.json
+          fi
+
+      - name: Upload localnet evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: veil-localnet-evidence
+          path: |
+            work/veil-localnet/localnet-evidence/
+            /tmp/zolana-localnet.log
+          if-no-files-found: ignore
+          retention-days: 7
