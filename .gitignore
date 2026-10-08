@@ -1,6 +1,9 @@
 # Checkpoint allowlist is staged explicitly. Everything else stays local.
 /*
 !/.gitignore
+!/.github/
+!/.github/workflows/
+!/.github/workflows/**
 !/work/
 /work/*
 !/work/veil-core-review/
