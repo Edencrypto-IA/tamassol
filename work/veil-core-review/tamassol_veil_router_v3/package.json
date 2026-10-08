@@ -1,0 +1,34 @@
+{
+  "name": "@tamassol/veil-core",
+  "version": "0.3.0-rc.1",
+  "private": true,
+  "type": "module",
+  "description": "Provider-neutral privacy intent router and verifiable privacy receipt core for TAMASSOL.",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "tsc -p tsconfig.json",
+    "test": "npm run build && node --test tests/*.test.mjs",
+    "demo": "npm run build && node demo/veil-router-demo.mjs",
+    "check": "npm run test && npm run demo"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "5.8.3"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ]
+}

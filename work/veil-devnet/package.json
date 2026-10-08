@@ -1,0 +1,9 @@
+{
+  "name": "tamassol-veil-devnet-test",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@heliuslabs/zolana": "0.4.0-alpha",
+    "@solana/kit": "8.3.0"
+  }
+}

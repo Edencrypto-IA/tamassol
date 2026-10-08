@@ -1,0 +1,10 @@
+{
+  "provider": "helius-confidential-devnet",
+  "health": "DEGRADED",
+  "proverReady": false,
+  "errorCode": "STALE_ROOT",
+  "timestamp": 1791452187516,
+  "lastSuccessfulCheck": null,
+  "network": "devnet",
+  "evidence": "prover-diagnostic-1791452187516.json"
+}
