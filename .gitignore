@@ -1,6 +1,19 @@
 # Checkpoint allowlist is staged explicitly. Everything else stays local.
 /*
 !/.gitignore
+!/README.md
+!/README.pt-BR.md
+!/docs/
+/docs/*
+!/docs/brand/
+/docs/brand/*
+!/docs/brand/universe.webp
+!/docs/brand/solflame.webp
+!/docs/brand/frost.webp
+!/docs/brand/volt.webp
+!/docs/brand/mizu.webp
+!/docs/brand/verdant.webp
+!/docs/brand/void.webp
 !/work/
 /work/*
 !/work/veil-core-review/
