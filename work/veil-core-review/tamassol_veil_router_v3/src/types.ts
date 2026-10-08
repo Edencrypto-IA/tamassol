@@ -1,4 +1,4 @@
-export type VeilNetwork = "devnet" | "mainnet-beta";
+export type VeilNetwork = "localnet" | "devnet" | "mainnet-beta";
 export type VeilOperation =
   | "shield"
   | "private_transfer"
